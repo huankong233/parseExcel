@@ -1,0 +1,19 @@
+#app {
+  margin: 20px;
+
+  & .el-alert__title {
+    vertical-align: middle;
+  }
+
+  & .el-alert {
+    margin: 0 0 15px 0;
+  }
+
+  & .el-card {
+    margin: 0 0 15px 0;
+  }
+
+  .el-form .el-form-item:last-child {
+    margin-bottom: 0;
+  }
+}
