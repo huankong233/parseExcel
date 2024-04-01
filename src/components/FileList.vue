@@ -121,6 +121,9 @@ async function parseFileList(formEl: FormInstance | null) {
       const colData: string[] = datum[dataColName]
         .split(/(?<=\.jpeg)\s+/)
         .flatMap((v: string) => v.split(/(?<=\.png)\s+/))
+        .flatMap((v: string) => v.split(/(?<=\.jpg)\s+/))
+        .flatMap((v: string) => v.split(/(?<=\.gif)\s+/))
+        .flatMap((v: string) => v.split(/(?<=\.webp)\s+/))
 
       data.push({
         filePath: dataColName,
