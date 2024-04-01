@@ -1,7 +1,6 @@
 {
   "name": "parse-excel",
-  "version": "0.0.1",
-  "private": true,
+  "version": "0.0.2",
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",

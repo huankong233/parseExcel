@@ -1,7 +1,5 @@
 <template>
   <el-card>
-    123
-    <el-color-picker :visible="true" />
     <h2 :class="{ needGap: fileList.length <= 0 }">ParseExcel</h2>
 
     <el-alert

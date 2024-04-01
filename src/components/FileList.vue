@@ -93,7 +93,7 @@ const fileListFormRule: FormRules = {
 
 interface parsedDataItem {
   filePath: string
-  fileName: string
+  fileNames: string[]
 }
 
 interface parsedData {
@@ -117,9 +117,14 @@ async function parseFileList(formEl: FormInstance | null) {
     const data: parsedDataItem[] = []
 
     dataCol.forEach(dataColName => {
+      // 判断是否为多个
+      const colData: string[] = datum[dataColName]
+        .split(/(?<=\.jpeg)\s+/)
+        .flatMap((v: string) => v.split(/(?<=\.png)\s+/))
+
       data.push({
         filePath: dataColName,
-        fileName: datum[dataColName]
+        fileNames: colData
       })
     })
 
@@ -132,19 +137,21 @@ async function parseFileList(formEl: FormInstance | null) {
     for (let i = 0; i < parsedData.length; i++) {
       const { name, data } = parsedData[i]
       for (let j = 0; j < data.length; j++) {
-        const { filePath, fileName } = data[j]
-        const fullPath = `${filePath}/${fileName}`
-        const outputPath = `${name}/${filePath}${extname(fileName.toString())}`
-        const file = parseExcel.findFile(fullPath)
-        if (file) {
-          // 文件存在
-          zip.file(outputPath, file)
-        } else {
-          // 文件不存在
-          const message = `"${fullPath}" 文件不存在!请检查选择的文件夹!`
-          ElMessage.error(message)
-          throw new Error(message)
-        }
+        const { filePath, fileNames } = data[j]
+        fileNames.forEach((fileName, index) => {
+          const fullPath = `${filePath}/${fileName}`
+          let outputPath = `${name}/${filePath}${index + 1}${extname(fileName.toString())}`
+          const file = parseExcel.findFile(fullPath)
+          if (file) {
+            // 文件存在
+            zip.file(outputPath, file)
+          } else {
+            // 文件不存在
+            const message = `"${fullPath}" 文件不存在!请检查选择的文件夹!`
+            ElMessage.error(message)
+            throw new Error(message)
+          }
+        })
       }
     }
 
