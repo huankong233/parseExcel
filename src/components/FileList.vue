@@ -11,6 +11,7 @@
           v-model="fileListForm.excelFile"
           placeholder="请选择"
           @change="changeExcelFile()"
+          bslur-key="uid"
         >
           <el-option v-for="xlsx in excelFiles" :key="xlsx.uid" :label="xlsx.name" :value="xlsx" />
         </el-select>
@@ -62,16 +63,16 @@
 </template>
 
 <script lang="ts" setup>
-import type { FormInstance, FormRules } from 'element-plus'
-import { ref } from 'vue'
-import { ElMessage } from 'element-plus'
 import { useParseExcel } from '@/store/ParseExcel.js'
-import { storeToRefs } from 'pinia'
-import { read, utils } from 'xlsx'
-import { readAsBinaryString } from '@/utils/FileReader.js'
-import JSZip from 'jszip'
+import { readFileAsArrayBuffer } from '@/utils/FileReader'
+import type { FormInstance, FormRules } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { saveAs } from 'file-saver'
+import JSZip from 'jszip'
 import { extname } from 'path-browserify'
+import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
+import { read, utils } from 'xlsx'
 
 const parseExcel = useParseExcel()
 const { excelFiles, fileListForm, showExcelForm } = storeToRefs(parseExcel)
@@ -106,24 +107,19 @@ async function parseFileList(formEl: FormInstance | null) {
   if (!(await formEl.validate(() => {}))) return
 
   // 整理数据
-  const parsedData = [] as parsedData[]
+  const parsedData: parsedData[] = []
 
   const { nameCol, nameRegexp, dataCol } = fileListForm.value
-  showExcelForm.value.data.forEach(datum => {
+  showExcelForm.value.data.forEach((datum) => {
     const name = datum[nameCol]
     const match = name.toString().match(nameRegexp)
     const regexpName = match ? match[1] : name
 
     const data: parsedDataItem[] = []
 
-    dataCol.forEach(dataColName => {
+    dataCol.forEach((dataColName) => {
       // 判断是否为多个
-      const colData: string[] = datum[dataColName]
-        .split(/(?<=\.jpeg)\s+/)
-        .flatMap((v: string) => v.split(/(?<=\.png)\s+/))
-        .flatMap((v: string) => v.split(/(?<=\.jpg)\s+/))
-        .flatMap((v: string) => v.split(/(?<=\.gif)\s+/))
-        .flatMap((v: string) => v.split(/(?<=\.webp)\s+/))
+      const colData = datum[dataColName].split(/(?<=\.jpg|jpeg|png|gif|webp)\s+/)
 
       data.push({
         filePath: dataColName,
@@ -143,7 +139,10 @@ async function parseFileList(formEl: FormInstance | null) {
         const { filePath, fileNames } = data[j]
         fileNames.forEach((fileName, index) => {
           const fullPath = `${filePath}/${fileName}`
-          let outputPath = `${name}/${filePath}${index + 1}${extname(fileName.toString())}`
+          let outputPath = `${name}/${filePath}${extname(fileName.toString())}`
+          if (fileNames.length > 1) {
+            outputPath = `${name}/${filePath}${index + 1}${extname(fileName.toString())}`
+          }
           const file = parseExcel.findFile(fullPath)
           if (file) {
             // 文件存在
@@ -175,8 +174,8 @@ async function parseFileList(formEl: FormInstance | null) {
 }
 
 async function changeExcelFile() {
-  const fileData = await readAsBinaryString(fileListForm.value.excelFile)
-  parseExcel.showExcelForm.workbook = read(fileData, { type: 'binary' })
+  const fileData = await readFileAsArrayBuffer(fileListForm.value.excelFile)
+  parseExcel.showExcelForm.workbook = read(fileData, { type: 'buffer' })
 }
 
 function changeSheetName() {

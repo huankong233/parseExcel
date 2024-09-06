@@ -1,10 +1,10 @@
-export async function readAsBinaryString(file: File): Promise<string | undefined> {
+export async function readFileAsArrayBuffer(file: File) {
   return new Promise((resove, reject) => {
     const reader = new FileReader()
     reader.onload = function (ev) {
-      resove(ev?.target?.result as string)
+      resove(ev?.target?.result)
     }
-    reader.readAsBinaryString(file)
+    reader.readAsArrayBuffer(file)
   })
 }
 

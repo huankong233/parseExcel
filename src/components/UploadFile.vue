@@ -29,7 +29,7 @@
       :show-file-list="false"
       @click="clickHandler()"
       v-model:file-list="fileList"
-      v-if="parseExcel.fileList.length <= 0"
+      v-show="parseExcel.fileList.length <= 0"
     >
       <el-icon class="el-icon--upload"><upload-filled /></el-icon>
       <div class="el-upload__text">点击来选择文件夹</div>
@@ -38,11 +38,12 @@
 </template>
 
 <script lang="ts" setup>
-import type { ComponentPublicInstance } from 'vue'
-import { UploadFilled } from '@element-plus/icons-vue'
-import { ref, onMounted } from 'vue'
 import { useParseExcel } from '@/store/ParseExcel.js'
+import { bindInputDirectory } from '@/utils/BindInputWebdirectory'
+import { UploadFilled } from '@element-plus/icons-vue'
 import { storeToRefs } from 'pinia'
+import type { ComponentPublicInstance } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const parseExcel = useParseExcel()
 const { fileList } = storeToRefs(parseExcel)
@@ -50,9 +51,7 @@ const { fileList } = storeToRefs(parseExcel)
 const upload = ref<ComponentPublicInstance | null>(null)
 
 // 切换为选择文件夹
-onMounted(() => {
-  if (upload.value) upload.value!.$!.vnode!.el!.querySelector('input')!.webkitdirectory = true
-})
+onMounted(bindInputDirectory)
 
 // 初始化变量
 function clickHandler() {

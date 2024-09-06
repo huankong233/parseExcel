@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia'
 import { makePath } from '@/utils/FileReader.js'
+import { defineStore } from 'pinia'
 
 import type { UploadFile, UploadRawFile } from 'element-plus/es/components/upload'
 import type { WorkBook } from 'xlsx'
@@ -24,10 +24,12 @@ export const useParseExcel = defineStore({
   }),
   getters: {
     rawFileList(state): UploadRawFile[] {
-      return state.fileList.map(file => file.raw) as UploadRawFile[]
+      return state.fileList.map((file) => file.raw) as UploadRawFile[]
     },
     excelFiles(): UploadRawFile[] {
-      return this.rawFileList.filter(file => file!.name.endsWith('.xlsx'))
+      return this.rawFileList.filter(
+        (file) => file.name.endsWith('.xlsx') || file.name.endsWith('.csv')
+      )
     },
     formatFileList() {
       const base = {}
@@ -59,7 +61,7 @@ export const useParseExcel = defineStore({
     findFile(path: string): File | null {
       const paths = path.split('/')
       let last = this.formatFileList as any
-      paths.forEach(path => {
+      paths.forEach((path) => {
         if (last !== null) {
           last = last[path] ?? null
         }

@@ -3,8 +3,8 @@
 </template>
 
 <script lang="ts" setup>
-import { useDark } from '@vueuse/core'
 import UserPage from '@/views/UserPage.vue'
+import { useDark } from '@vueuse/core'
 
 useDark()
 </script>
