@@ -27,6 +27,7 @@ export default defineConfig({
       output: {
         chunkFileNames: 'assets/js/[name]-[hash].js', // 产生的 chunk 自定义命名
         entryFileNames: 'assets/js/[name]-[hash].js', // 指定 chunks 的入口文件匹配模式
+        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]', // 自定义构建结果中的静态资源名称, 资源文件像 字体, 图片等
         manualChunks(id: string) {
           if (id.includes('node_modules')) {
             return id.toString().split('node_modules/.pnpm/')[1].split('/')[0].toString()
