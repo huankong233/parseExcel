@@ -16,8 +16,8 @@ export default defineConfig({
       compress: {
         // 生产环境时移除console
         drop_console: true,
-        drop_debugger: true
-      }
+        drop_debugger: true,
+      },
     },
     //   关闭文件计算
     reportCompressedSize: false,
@@ -28,28 +28,23 @@ export default defineConfig({
         chunkFileNames: 'assets/js/[name]-[hash].js', // 产生的 chunk 自定义命名
         entryFileNames: 'assets/js/[name]-[hash].js', // 指定 chunks 的入口文件匹配模式
         assetFileNames: 'assets/[ext]/[name]-[hash].[ext]', // 自定义构建结果中的静态资源名称, 资源文件像 字体, 图片等
-        manualChunks(id: string) {
-          if (id.includes('node_modules')) {
-            return id.toString().split('node_modules/.pnpm/')[1].split('/')[0].toString()
-          }
-        }
-      }
-    }
+      },
+    },
   },
   plugins: [
     vue(),
     AutoImport({
-      resolvers: [ElementPlusResolver()]
+      resolvers: [ElementPlusResolver()],
     }),
     Components({
-      resolvers: [ElementPlusResolver()]
+      resolvers: [ElementPlusResolver()],
     }),
     viteCompression({
       verbose: true,
       disable: false,
       algorithm: 'brotliCompress',
-      ext: '.gz'
-    })
+      ext: '.gz',
+    }),
     // visualizer({
     //   gzipSize: true,
     //   brotliSize: true,
@@ -59,7 +54,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
-  }
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
 })

@@ -14,22 +14,20 @@ export const useParseExcel = defineStore({
       nameCol: '',
       nameColIndex: -1,
       nameRegexp: '学生：(.*?)-',
-      dataCol: []
+      dataCol: [],
     },
     showExcelForm: {
       workbook: null as unknown as WorkBook,
       keys: [] as string[],
-      data: [] as any[]
-    }
+      data: [] as any[],
+    },
   }),
   getters: {
     rawFileList(state): UploadRawFile[] {
       return state.fileList.map((file) => file.raw) as UploadRawFile[]
     },
     excelFiles(): UploadRawFile[] {
-      return this.rawFileList.filter(
-        (file) => file.name.endsWith('.xlsx') || file.name.endsWith('.csv')
-      )
+      return this.rawFileList.filter((file) => file.name.endsWith('.xlsx') || file.name.endsWith('.csv'))
     },
     formatFileList() {
       const base = {}
@@ -38,7 +36,7 @@ export const useParseExcel = defineStore({
         makePath(base, webkitRelativePath, file)
       })
       return base
-    }
+    },
   },
   actions: {
     initVariables() {
@@ -49,12 +47,12 @@ export const useParseExcel = defineStore({
         nameCol: '',
         nameColIndex: -1,
         nameRegexp: '学生：(.*?)-',
-        dataCol: []
+        dataCol: [],
       }
       this.showExcelForm = {
         workbook: null as unknown as WorkBook,
         keys: [],
-        data: []
+        data: [],
       }
     },
     // 根据路径找到文件
@@ -68,6 +66,6 @@ export const useParseExcel = defineStore({
       })
 
       return last
-    }
-  }
+    },
+  },
 })

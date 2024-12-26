@@ -10,10 +10,6 @@ const FileList = defineAsyncComponent(() => import('@/components/FileList.vue'))
 const UploadFile = defineAsyncComponent(() => import('@/components/UploadFile.vue'))
 const ShowExcel = defineAsyncComponent(() => import('@/components/ShowExcel.vue'))
 
-// import FileList from '@/components/FileList.vue'
-// import UploadFile from '@/components/UploadFile.vue'
-// import ShowExcel from '@/components/ShowExcel.vue'
-
 import { useParseExcel } from '@/store/ParseExcel.js'
 
 const parseExcel = useParseExcel()
